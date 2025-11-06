@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  # --- Base de données PostgreSQL ---
+  db:
+    image: postgres:18
+    container_name: postgres_db
+    restart: always
+    env_file: .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/
+    networks:
+      - Ecoride
+
+  # --- Backend NestJS ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nest_backend
+    restart: always
+    env_file: .env
+    ports:
+      - "${BACK_PORT}:3001"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./backend:/app
+    command: npm run start:dev
+    networks:
+      - Ecoride
+
+  # --- Frontend Next.js ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: next_frontend
+    restart: always
+    env_file: .env
+    ports:
+      - "${FRONT_PORT}:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:${BACK_PORT}
+    volumes:
+      - ./frontend:/app
+    command: npm run dev
+    networks:
+      - Ecoride
+
+volumes:
+  pgdata:
+
+networks:
+  Ecoride:
