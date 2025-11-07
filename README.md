@@ -148,7 +148,7 @@ L’application permet aux utilisateurs de proposer, réserver et gérer des tra
 
 ```bash
 git clone https://github.com/bayesOnTheWeb/EcoRideECF.git
-cd ecoride-backend
+cd backend
 npm install
 npm run start:dev
 
@@ -157,8 +157,7 @@ npm run start:dev
 ### Frontend :
 
 ```bash
-git clone https://github.com/<ton_repo>/ecoride-frontend.git
-cd ecoride-frontend
+cd frontend
 npm install
 npm run dev
 
