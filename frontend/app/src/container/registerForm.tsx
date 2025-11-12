@@ -19,8 +19,12 @@ export default function RegisterForm() {
     setLoading(true);
     setMessage("");
 
+    if(confirmPassword != password){
+      setMessage('Les mots de passe ne correspondent pas')
+      return 
+    }
     try {
-      const res = await fetch("https://ton-backend/api/auth/register", {
+      const res = await fetch("http://localhost:3001/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -28,15 +32,13 @@ export default function RegisterForm() {
           lastname,
           email,
           password,
-          confirmPassword,
         }),
       });
 
       const result = await res.json();
 
       if (res.ok) {
-        setMessage(result.message || "Inscription réussie !");
-        // reset des champs
+        setMessage(result.message || "Inscription réussie !")
         setFirstname("");
         setLastname("");
         setEmail("");
@@ -54,7 +56,8 @@ export default function RegisterForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center ">
+    <div className="flex flex-col sm:px-100 justify-center items-center ">
+      <h1 className="text-primary pb-20 text-4xl">INSCRIPTION</h1>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 px-16 rounded-2xl w-full max-w-auto"

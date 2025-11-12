@@ -1,20 +1,32 @@
-
-
-import RideCard from "./src/container/RideCard";
+import Header from "./src/container/header";
+import Image from "next/image";
 import RedirectButton from "./src/ui/redirectButton";
-import UserInput from "./src/ui/userInput";
+import Footer from "./src/container/footer";
 
-export default function Home() {
-  return (
-  <>
-  <div className="p-8">
-  <RedirectButton label={"clickMe"} redirectTo={'/test'} isPrimary={true} />
-  <UserInput label={"renseignez votre prénom"} type={"text"} name={"name"} placeholder={"prénom"} />
-  <RideCard author={"pierre"} arrivalPlace={"Paris"} departurePlace={"Montpellier"} remainingPlaces={3} authorEmail={"pierre@email.com"} authorPhone={"06 25 63 97 98"} />
-  </div>
+export default function Page(){
+  return(
+    <>
+      <Header />
+      <section className="flex flex-col gap-8 pb-40">
+        <div className="flex justify-center">
+          <h2 className="font-header text-primary text-3xl">PRENEZ SOINS</h2>
+        </div>
+        <div className="flex justify-center">
+          <h2 className="font-header text-primary text-2xl" >de notre planète</h2>
+        </div>
+        <div className="flex justify-center">
+          <h2 className="font-header text-primary text-3xl">avec</h2>
+        </div>
+        <div className="flex justify-center">
+          <Image src={"ecoride.svg"} alt={"logo d'Ecoride"} width={150} height={150}/>
+        </div>
+        </section>
+        <section className="flex flex-col sm:px-100 sm:py-0 justify-center gap-6 py-15 px-20">
+          <RedirectButton label={"s\'inscrie"} redirectTo={"/register"} isPrimary={true} />
+          <RedirectButton label={"se connecter"} redirectTo={"/connect"} isPrimary={false} />
+        </section>
+        <Footer />
+    </>
+  );
 
-
-  </>
-
-);
 }

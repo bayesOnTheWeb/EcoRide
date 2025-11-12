@@ -6,6 +6,7 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { ConnectUserDto } from 'src/user/dto/connect-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { NotFoundError } from 'rxjs';
 
 
 @Injectable()
@@ -29,25 +30,25 @@ export class AuthService {
 
   }
 
-  async connect(user : ConnectUserDto){
+async connect(user: ConnectUserDto) {
+    const existingUser = await this.userRepository.findOne({ where: { email: user.email } });
 
-    const ExistingUser = await this.userRepository.findOne({where : {email : user.email}})
-    if(!ExistingUser){
-        return new InternalServerErrorException();
-    }
-    const isMatch = await bcrypt.compare(user.password, ExistingUser.password)
-    if(!isMatch){
-        return new InternalServerErrorException();
+    if (!existingUser) {
+      throw new UnauthorizedException('Utilisateur non trouvé'); // ← message spécifique
     }
 
-    const payload = {userId : ExistingUser.id,  role : ExistingUser.isAdmin}
-    const token = this.jwtService.sign(payload)
+    const isMatch = await bcrypt.compare(user.password, existingUser.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Mot de passe incorrect'); // ← message spécifique
+    }
 
+    const payload = { userId: existingUser.id, role: existingUser.isAdmin };
+    const token = this.jwtService.sign(payload);
 
-    const safeUser = {email : ExistingUser.email , token}
+    const safeUser = { email: existingUser.email, token };
 
-    console.log('Token créé avec succès : ' , safeUser)
+    console.log('Token créé avec succès :', safeUser);
 
-    return token
+    return safeUser; // tu peux retourner l'objet complet si tu veux l'envoyer au frontend
   }
 }

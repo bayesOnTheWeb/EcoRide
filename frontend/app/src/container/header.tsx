@@ -13,7 +13,7 @@ export default function Header(){
 
     return (
         <>
-        <div className="flex flex-col py-15 justify-center items-center">
+        <div className="flex sm:flex-row sm:justify-between sm:px-20 flex-col py-15 justify-center items-center">
             <div>
                 <Image onClick={handleClick} src={"ecoride.svg"} alt={"logo du site web"} height={200} width={200} />
             </div>
