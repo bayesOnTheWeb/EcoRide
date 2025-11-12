@@ -32,6 +32,10 @@ services:
       - "${FRONT_PORT}:3000"
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
 
 volumes:
   db_data:
