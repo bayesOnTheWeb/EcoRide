@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import UserInput from "../ui/userInput";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false); 
+  const [isError, setIsError] = useState(false);
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -22,6 +24,7 @@ export default function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       const result = await res.json();
@@ -32,7 +35,7 @@ export default function LoginForm() {
         setEmail("");
         setPassword("");
 
-        redirect('/')
+        router.push("/me");
       } else {
         setMessage(result.message || "Erreur lors de la connexion.");
         setIsError(true);

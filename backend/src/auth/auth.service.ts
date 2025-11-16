@@ -22,15 +22,21 @@ export class AuthService {
 
   async createUser(user: CreateUserDto) {
     try {
-      const isExist = await this.userRepository.findOne({where : {email : user.email}})
-      if(isExist){
-        return {sucess : false, message : "email déjà utilisé."}
+      const isExist = await this.userRepository.findOne({
+        where: { email: user.email },
+      });
+      if (isExist) {
+        return { sucess: false, message: 'email déjà utilisé.' };
       }
       const hash = await this.securityservice.hashPassword(user);
       const newUser = { ...user, password: hash };
       const savedUser = this.userRepository.create(newUser);
       await this.userRepository.save(savedUser);
-      return {success : true , message : "utilisateur créé avec sucess" , email : user.email}
+      return {
+        success: true,
+        message: 'utilisateur créé avec sucess',
+        email: user.email,
+      };
     } catch (error) {
       throw new ConflictException();
     }
@@ -57,11 +63,11 @@ export class AuthService {
         throw new UnauthorizedException();
       }
 
-      const newToken = await this.securityservice.createToken(isEmailExist);
-      console.log(newToken);
-      return { success: true, message: 'utilisateur authentifié avec succès' , newToken };
+      const token = await this.securityservice.createToken(isEmailExist);
+      console.log(token);
+      return token.token ;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new UnauthorizedException();
     }
   }
 }

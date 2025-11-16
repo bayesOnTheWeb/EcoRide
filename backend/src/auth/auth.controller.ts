@@ -19,7 +19,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.createUser(createUserDto);
-    return { message: 'Utilisateur créé', user : user.email};
+    return { message: 'Utilisateur créé', user: user.email };
   }
 
   @Post('login')
@@ -30,15 +30,15 @@ export class AuthController {
   ) {
     const token = await this.authService.connect(user);
 
-    res.cookie('jwt', token.newToken, {
-      httpOnly: false,
-      sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production', 
-      maxAge: 1000 * 60 * 30, 
-      path: '/', 
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 30,
+      path: '/',
     });
 
-    return { message: 'Connexion réussie', token: token.newToken };
+    return {sucess : true , token};
   }
 
   @Post('logout')
@@ -46,7 +46,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt', {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       path: '/',
     });

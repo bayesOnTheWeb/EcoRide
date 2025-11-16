@@ -19,7 +19,7 @@ export default function Page() {
           if (data) {
             setLoading(false);
             setData(data);
-         }
+          }
         } else {
           setLoading(false);
           setError("Erreur lors de la récupération des données utilisateur");

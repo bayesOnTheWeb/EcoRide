@@ -11,8 +11,8 @@ export class SecurityService {
 
   async createToken(user: User) {
     const payload = { userId: user.id };
-    const token = await this.jwtService.signAsync(payload)
-    return {token}
+    const token = await this.jwtService.signAsync(payload);
+    return { token };
   }
 
   async hashPassword(user: CreateUserDto) {

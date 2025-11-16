@@ -4,12 +4,11 @@ import { AppService } from './app.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
-import { JwtService } from './jwt/jwt.service';
-import { SecurityService } from './security/security.service';
 import { SecurityModule } from './security/security.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthController } from './auth/auth.controller';
+import { SecurityService } from './security/security.service';
 
 @Module({
   imports: [
@@ -28,8 +27,9 @@ import { SecurityModule } from './security/security.module';
     AuthModule,
     UserModule,
     SecurityModule,
+    JwtModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, JwtService, SecurityService],
+  controllers: [AppController, AuthController],
+  providers: [AppService],
 })
 export class AppModule {}
