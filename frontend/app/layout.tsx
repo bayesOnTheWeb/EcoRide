@@ -24,7 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${revalia.variable} ${robotoCondensed.variable}`}>
+    <html
+      lang="fr"
+      className={`${revalia.variable} ${robotoCondensed.variable}`}
+    >
       <body className="antialiased bg-background text-text font-[var(--font-body)]">
         {children}
       </body>

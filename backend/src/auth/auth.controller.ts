@@ -15,11 +15,11 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-@Post('signup')
+  @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.createUser(createUserDto);
-    return { message: 'Utilisateur créé', userId: createUserDto.email};
+    return { message: 'Utilisateur créé', user : user.email};
   }
 
   @Post('login')
@@ -30,15 +30,15 @@ export class AuthController {
   ) {
     const token = await this.authService.connect(user);
 
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production', // 🔒 sécurité prod
-      maxAge: 1000 * 60 * 30, // 30 min
-      path: '/', // important pour correspondre à clearCookie()
+    res.cookie('jwt', token.newToken, {
+      httpOnly: false,
+      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production', 
+      maxAge: 1000 * 60 * 30, 
+      path: '/', 
     });
 
-    return { message: 'Connexion réussie' };
+    return { message: 'Connexion réussie', token: token.newToken };
   }
 
   @Post('logout')

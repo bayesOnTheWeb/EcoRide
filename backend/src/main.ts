@@ -4,7 +4,6 @@ import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -20,7 +19,7 @@ async function bootstrap() {
         transform: true,
       }),
     ));
-    app.use(cookieParser())
+  app.use(cookieParser());
 
   await app.listen(process.env.BACK_PORT ?? 3001);
 }

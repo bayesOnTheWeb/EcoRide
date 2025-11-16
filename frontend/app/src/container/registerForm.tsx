@@ -19,9 +19,9 @@ export default function RegisterForm() {
     setLoading(true);
     setMessage("");
 
-    if(confirmPassword != password){
-      setMessage('Les mots de passe ne correspondent pas')
-      return 
+    if (confirmPassword != password) {
+      setMessage("Les mots de passe ne correspondent pas");
+      return;
     }
     try {
       const res = await fetch("http://localhost:3001/auth/signup", {
@@ -38,7 +38,7 @@ export default function RegisterForm() {
       const result = await res.json();
 
       if (res.ok) {
-        setMessage(result.message || "Inscription réussie !")
+        setMessage(result.message || "Inscription réussie !");
         setFirstname("");
         setLastname("");
         setEmail("");
@@ -111,7 +111,9 @@ export default function RegisterForm() {
           {loading ? "En cours..." : "S'inscrire"}
         </button>
 
-        {message && <p className="mt-2 text-center text-sm text-secondary">{message}</p>}
+        {message && (
+          <p className="mt-2 text-center text-sm text-secondary">{message}</p>
+        )}
       </form>
     </div>
   );

@@ -1,54 +1,67 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { handleRetry, InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { ConnectUserDto } from 'src/user/dto/connect-user.dto';
-import * as bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
-import { NotFoundError } from 'rxjs';
-
+import { SecurityService } from 'src/security/security.service';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private securityservice: SecurityService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService : JwtService,
   ) {}
 
   async createUser(user: CreateUserDto) {
-
     try {
-    const hashedPassword = await bcrypt.hash(user.password , 10)
-    const newUser = {...user , password: hashedPassword}
-    const savedUser = this.userRepository.create(newUser)
-    await this.userRepository.save(savedUser) 
+      const isExist = await this.userRepository.findOne({where : {email : user.email}})
+      if(isExist){
+        return {sucess : false, message : "email déjà utilisé."}
+      }
+      const hash = await this.securityservice.hashPassword(user);
+      const newUser = { ...user, password: hash };
+      const savedUser = this.userRepository.create(newUser);
+      await this.userRepository.save(savedUser);
+      return {success : true , message : "utilisateur créé avec sucess" , email : user.email}
     } catch (error) {
-        throw new UnauthorizedException();
+      throw new ConflictException();
     }
-
   }
 
-async connect(user: ConnectUserDto) {
-    const existingUser = await this.userRepository.findOne({ where: { email: user.email } });
+  async connect(user: ConnectUserDto) {
+    //vérifier l'existance de l'email en base
+    // vérifier la correspondance des mots de passes entre la soumission et celui stocké en base
+    //si pass , création du token de connexion
 
-    if (!existingUser) {
-      throw new UnauthorizedException('Utilisateur non trouvé'); // ← message spécifique
+    try {
+      const isEmailExist = await this.userRepository.findOne({
+        where: { email: user.email },
+      });
+      if (!isEmailExist) {
+        throw new InternalServerErrorException();
+      }
+
+      const isPasswordValid = await this.securityservice.comparePassword(
+        user,
+        isEmailExist.password,
+      );
+      if (!isPasswordValid) {
+        throw new UnauthorizedException();
+      }
+
+      const newToken = await this.securityservice.createToken(isEmailExist);
+      console.log(newToken);
+      return { success: true, message: 'utilisateur authentifié avec succès' , newToken };
+    } catch (error) {
+      throw new InternalServerErrorException();
     }
-
-    const isMatch = await bcrypt.compare(user.password, existingUser.password);
-    if (!isMatch) {
-      throw new UnauthorizedException('Mot de passe incorrect'); // ← message spécifique
-    }
-
-    const payload = { userId: existingUser.id, role: existingUser.isAdmin };
-    const token = this.jwtService.sign(payload);
-
-    const safeUser = { email: existingUser.email, token };
-
-    console.log('Token créé avec succès :', safeUser);
-
-    return safeUser; // tu peux retourner l'objet complet si tu veux l'envoyer au frontend
   }
 }

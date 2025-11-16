@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserInput from "../ui/userInput";
+import { redirect } from "next/navigation";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -9,8 +10,7 @@ export default function LoginForm() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false); // ← nouveau state
-
+  const [isError, setIsError] = useState(false); 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -31,6 +31,8 @@ export default function LoginForm() {
         setIsError(false);
         setEmail("");
         setPassword("");
+
+        redirect('/')
       } else {
         setMessage(result.message || "Erreur lors de la connexion.");
         setIsError(true);

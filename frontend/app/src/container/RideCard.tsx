@@ -13,7 +13,7 @@ export default function RideCard({
   departurePlace,
   remainingPlaces,
   authorEmail,
-  authorPhone
+  authorPhone,
 }: RideCardProps) {
   return (
     <>

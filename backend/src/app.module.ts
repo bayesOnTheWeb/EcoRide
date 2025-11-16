@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from './jwt/jwt.service';
+import { SecurityService } from './security/security.service';
+import { SecurityModule } from './security/security.module';
 
 @Module({
   imports: [
@@ -24,8 +27,9 @@ import { AuthModule } from './auth/auth.module';
     ThrottlerModule.forRoot(),
     AuthModule,
     UserModule,
+    SecurityModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtService, SecurityService],
 })
 export class AppModule {}
