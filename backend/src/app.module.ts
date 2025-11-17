@@ -8,7 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './security/security.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth/auth.controller';
-import { SecurityService } from './security/security.service';
+import { RidesModule } from './rides/rides.module';
+import { RidesService } from './rides/rides.service';
+import { RidesController } from './rides/rides.controller';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { SecurityService } from './security/security.service';
     UserModule,
     SecurityModule,
     JwtModule,
+    RidesModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

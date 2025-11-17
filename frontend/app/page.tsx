@@ -28,7 +28,7 @@ export default function Page() {
           />
         </div>
       </section>
-      <section className="flex flex-col sm:px-100 sm:py-0 justify-center gap-6 py-15 px-20">
+      <section className="flex flex-col sm:px-150 sm:py-0 justify-center gap-6 py-15 px-20">
         <RedirectButton
           label={"s\'inscrie"}
           redirectTo={"/register"}

@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="flex sm:flex-row sm:justify-between sm:px-20 flex-col py-15 justify-center items-center">
+      <div className="flex max-w-full sm:flex-row sm:justify-between sm:px-20 flex-col py-15 justify-center items-center">
         <div>
           <Image
             onClick={handleClick}
@@ -32,6 +32,8 @@ export default function Header() {
             redirectTo={"/contact"}
             isPrimary={false}
           />
+
+          <RedirectButton label={"profil"} redirectTo={"/me"} isPrimary={false} />
         </div>
       </div>
     </>
